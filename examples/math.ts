@@ -96,7 +96,7 @@ const benchmark: benchmark_opts = {
   ],
   output: {
     format: "json",
-    filename: "gsm8k-math-results.json",
+    filename: "output.json",
   },
 };
 
