@@ -2,9 +2,9 @@
 
 ## Project Context
 
-This project is intended to become a TypeScript SDK for building and running LLM benchmarks. The first supported benchmark target is text-based models only.
+This project is intended to become a TypeScript SDK for building and running LLM benchmarks through OpenRouter. The supported benchmark target is text-based models only.
 
-The main product goal is ease of setup: a developer should be able to define an evaluation, connect one or more model providers, run the benchmark, and inspect results with as little ceremony as possible.
+The main product goal is ease of setup: a developer should be able to define an evaluation, configure OpenRouter, run the benchmark against one or more OpenRouter models, and inspect results with as little ceremony as possible.
 
 The maintainer is new to SDK and npm package development. Future work should include clear explanations of package structure, TypeScript choices, public API design, build tooling, testing, versioning, and publishing tradeoffs as changes are made.
 
@@ -13,7 +13,8 @@ The maintainer is new to SDK and npm package development. Future work should inc
 - Prefer simple, well-documented public APIs over clever abstractions.
 - Treat SDK ergonomics as a core feature. Example usage should be easy to read before the internals are optimized.
 - Start with text-only evaluation support. Avoid adding multimodal assumptions until explicitly requested.
-- Keep provider integrations loosely coupled so benchmarks can run against different LLM vendors or local model adapters.
+- Keep OpenRouter as the only provider unless the user explicitly changes the product direction.
+- Do not add provider abstraction layers, vendor plugin systems, or local model adapter support without a concrete request.
 - Design types first where useful, because this package should feel reliable and discoverable in editors.
 - Keep dependencies minimal, especially for the core SDK.
 - Build incrementally. Not everything added has to be final; expect to grow the SDK slowly and refactor often as the right API becomes clearer.
