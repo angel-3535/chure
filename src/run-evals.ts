@@ -1,27 +1,52 @@
 import { OpenRouter } from "@openrouter/sdk";
 import { writeFile } from "node:fs/promises";
 
-import {
-  summarize_case_results,
-  summarize_model_results,
-} from "./evaluation.js";
+import { summarize_case_results } from "./evaluation.js";
 import type {
   eval_case_result,
   eval_model_result,
   eval_opts,
   eval_result,
   model_opts,
+  run_evals_options,
+  verbose_eval_result,
 } from "./types.js";
 
-export const run_evals = async (
+const summarize_eval_result = (result: verbose_eval_result): eval_result => ({
+  name: result.name,
+  models: result.models.map((model_result) => ({
+    model: model_result.model,
+    evaluation: model_result.evaluation,
+  })),
+});
+
+export async function run_evals(
   api_key: string,
   model_list: model_opts[],
   eval_list: eval_opts[],
-): Promise<eval_result[]> => {
+): Promise<eval_result[]>;
+export async function run_evals(
+  api_key: string,
+  model_list: model_opts[],
+  eval_list: eval_opts[],
+  options: { verbose?: false },
+): Promise<eval_result[]>;
+export async function run_evals(
+  api_key: string,
+  model_list: model_opts[],
+  eval_list: eval_opts[],
+  options: { verbose: true },
+): Promise<verbose_eval_result[]>;
+export async function run_evals(
+  api_key: string,
+  model_list: model_opts[],
+  eval_list: eval_opts[],
+  options?: run_evals_options,
+): Promise<eval_result[] | verbose_eval_result[]> {
   const client = new OpenRouter({
     apiKey: api_key,
   });
-  const results: eval_result[] = [];
+  const results: Array<eval_result | verbose_eval_result> = [];
 
   for (const benchmark_scenario of eval_list) {
     const model_results: eval_model_result[] = [];
@@ -53,13 +78,13 @@ export const run_evals = async (
         const evaluation =
           typeof evaluation_result === "boolean"
             ? {
-                type: "pass_fail" as const,
-                passed: evaluation_result,
-              }
+              type: "pass_fail" as const,
+              passed: evaluation_result,
+            }
             : {
-                type: "score" as const,
-                score: evaluation_result,
-              };
+              type: "score" as const,
+              score: evaluation_result,
+            };
 
         case_results.push({
           prompt: test_case.prompt,
@@ -76,21 +101,23 @@ export const run_evals = async (
       });
     }
 
-    const eval_result: eval_result = {
+    const verbose_eval_result: verbose_eval_result = {
       name: benchmark_scenario.name,
       models: model_results,
-      evaluation: summarize_model_results(model_results),
     };
-    results.push(eval_result);
+    const output_result = options?.verbose
+      ? verbose_eval_result
+      : summarize_eval_result(verbose_eval_result);
+    results.push(output_result);
 
     if (benchmark_scenario.output.filename) {
       await writeFile(
         benchmark_scenario.output.filename,
-        JSON.stringify(eval_result, null, 2),
+        JSON.stringify(output_result, null, 2),
         "utf8",
       );
     }
   }
 
   return results;
-};
+}

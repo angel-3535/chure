@@ -65,8 +65,21 @@ export interface eval_model_result {
   evaluation: eval_summary;
 }
 
+export interface eval_model_summary_result {
+  model: string;
+  evaluation: eval_summary;
+}
+
 export interface eval_result {
   name: string;
+  models: eval_model_summary_result[];
+}
+
+export interface verbose_eval_result {
+  name: string;
   models: eval_model_result[];
-  evaluation: eval_summary;
+}
+
+export interface run_evals_options {
+  verbose?: boolean;
 }
