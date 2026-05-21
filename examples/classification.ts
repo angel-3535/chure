@@ -1,7 +1,6 @@
 import {
   benchmark_opts,
   format_pretty_results,
-  model_opts,
   run_benchmarks,
 } from "../src/index.js";
 
@@ -28,23 +27,15 @@ const benchmark: benchmark_opts = {
       },
     },
   ],
-  output: {
-    format: "json",
-    filename: "support-ticket-routing.json",
-  },
 };
 
-const models: model_opts[] = [
-  {
-    name: "openai/gpt-3.5-turbo",
-  },
-];
+const models = ["openai/gpt-3.5-turbo"];
 
-const result = await run_benchmarks(
-  process.env["OPENROUTER_API_KEY"] ?? "",
+const result = await run_benchmarks({
+  api_key: process.env["OPENROUTER_API_KEY"] ?? "",
   models,
-  [benchmark],
-  { verbose: true },
-);
+  benchmarks: [benchmark],
+  output_file: "support-ticket-routing.json",
+});
 
 console.log(format_pretty_results(result));

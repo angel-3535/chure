@@ -1,9 +1,9 @@
 import {
   benchmark_opts,
   format_pretty_results,
-  model_opts,
   run_benchmarks,
 } from "../src/index.js";
+import type { model_input } from "../src/index.js";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -29,25 +29,20 @@ const benchmark: benchmark_opts = {
       },
     },
   ],
-  output: {
-    format: "json",
-    filename: "output.json",
-  },
 };
 
-const models: model_opts[] = [
-  {
-    name: "openai/gpt-3.5-turbo",
-  },
+const models: model_input[] = [
+  "openai/gpt-3.5-turbo",
   {
     name: "deepseek/deepseek-chat",
     reasoning: "medium",
   },
 ];
 
-const result = await run_benchmarks(
-  process.env["OPENROUTER_API_KEY"] ?? "",
+const result = await run_benchmarks({
+  api_key: process.env["OPENROUTER_API_KEY"] ?? "",
   models,
-  [benchmark],
-);
+  benchmarks: [benchmark],
+  output_file: "output.json",
+});
 console.log(format_pretty_results(result));

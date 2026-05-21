@@ -1,9 +1,9 @@
 import {
   benchmark_opts,
   format_pretty_results,
-  model_opts,
   run_benchmarks,
 } from "../src/index.js";
+import type { model_input } from "../src/index.js";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -94,13 +94,9 @@ const benchmark: benchmark_opts = {
       },
     },
   ],
-  output: {
-    format: "json",
-    filename: "output.json",
-  },
 };
 
-const models: model_opts[] = [
+const models: model_input[] = [
   {
     name: "openai/gpt-5.5",
     reasoning: "medium",
@@ -123,11 +119,11 @@ const models: model_opts[] = [
   },
 ];
 
-const result = await run_benchmarks(
-  process.env["OPENROUTER_API_KEY"] ?? "",
+const result = await run_benchmarks({
+  api_key: process.env["OPENROUTER_API_KEY"] ?? "",
   models,
-  [benchmark],
-  { verbose: true },
-);
+  benchmarks: [benchmark],
+  output_file: "gsm8k-math-results.json",
+});
 
 console.log(format_pretty_results(result));

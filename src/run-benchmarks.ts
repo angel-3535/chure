@@ -8,24 +8,11 @@ import {
 } from "./openrouter.js";
 import type {
   benchmark_eval,
-  benchmark_eval_result,
   benchmark_model_result,
-  benchmark_opts,
-  benchmark_result,
   model_opts,
   run_benchmarks_options,
   verbose_benchmark_result,
 } from "./types.js";
-
-const summarize_benchmark_result = (
-  result: verbose_benchmark_result,
-): benchmark_result => ({
-  name: result.name,
-  models: result.models.map((model_result) => ({
-    model: model_result.model,
-    summary: model_result.summary,
-  })),
-});
 
 const evaluate_output = (output: string, eval_definition: benchmark_eval) => {
   switch (eval_definition.evaluator.type) {
@@ -39,36 +26,19 @@ const evaluate_output = (output: string, eval_definition: benchmark_eval) => {
 };
 
 export async function run_benchmarks(
-  api_key: string,
-  model_list: model_opts[],
-  benchmark_list: benchmark_opts[],
-): Promise<benchmark_result[]>;
-export async function run_benchmarks(
-  api_key: string,
-  model_list: model_opts[],
-  benchmark_list: benchmark_opts[],
-  options: { verbose?: false },
-): Promise<benchmark_result[]>;
-export async function run_benchmarks(
-  api_key: string,
-  model_list: model_opts[],
-  benchmark_list: benchmark_opts[],
-  options: { verbose: true },
-): Promise<verbose_benchmark_result[]>;
-
-export async function run_benchmarks(
-  api_key: string,
-  model_list: model_opts[],
-  benchmark_list: benchmark_opts[],
-  options?: run_benchmarks_options,
-): Promise<benchmark_result[] | verbose_benchmark_result[]> {
+  options: run_benchmarks_options,
+): Promise<verbose_benchmark_result[]> {
+  const model_list: model_opts[] = options.models.map((model) =>
+    typeof model === "string" ? { name: model } : model,
+  );
   const client = new OpenRouter({
-    apiKey: api_key,
+    apiKey: options.api_key,
   });
   await validate_openrouter_models(client, model_list);
 
+  // Run every benchmark against every model and every eval.
   const results = await Promise.all(
-    benchmark_list.map(async (benchmark) => {
+    options.benchmarks.map(async (benchmark) => {
       const model_results = await Promise.all(
         model_list.map(async (model): Promise<benchmark_model_result> => {
           const eval_results = await Promise.all(
@@ -120,21 +90,19 @@ export async function run_benchmarks(
         name: benchmark.name,
         models: model_results,
       };
-      const output_result = options?.verbose
-        ? verbose_benchmark_result
-        : summarize_benchmark_result(verbose_benchmark_result);
 
-      if (benchmark.output.filename) {
-        await writeFile(
-          benchmark.output.filename,
-          JSON.stringify(output_result, null, 2),
-          "utf8",
-        );
-      }
-
-      return output_result;
+      return verbose_benchmark_result;
     }),
   );
+
+  // JSON is the only output format today, so the option is just the file path.
+  if (options.output_file) {
+    await writeFile(
+      options.output_file,
+      JSON.stringify(results, null, 2),
+      "utf8",
+    );
+  }
 
   return results;
 }

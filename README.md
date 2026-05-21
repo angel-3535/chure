@@ -20,13 +20,13 @@ Install dependencies:
 pnpm install
 ```
 
-Set your OpenRouter API key and pass it to the function `run_benchmark`
+Set your OpenRouter API key and pass it to the function `run_benchmarks`.
 
 ## Basic Example
 
 ```ts
 import { format_pretty_results, run_benchmarks } from "chure";
-import type { benchmark_opts, model_opts } from "chure";
+import type { benchmark_opts } from "chure";
 
 const benchmark: benchmark_opts = {
   name: "capitals",
@@ -40,23 +40,16 @@ const benchmark: benchmark_opts = {
       },
     },
   ],
-  output: {
-    format: "json",
-    filename: "output.json",
-  },
 };
 
-const models: model_opts[] = [
-  {
-    name: "openai/gpt-3.5-turbo",
-  },
-];
+const models = ["openai/gpt-3.5-turbo"];
 
-const result = await run_benchmarks(
-  process.env["OPENROUTER_API_KEY"] ?? "",
+const result = await run_benchmarks({
+  api_key: process.env["OPENROUTER_API_KEY"] ?? "",
   models,
-  [benchmark],
-);
+  benchmarks: [benchmark],
+  output_file: "output.json",
+});
 
 console.log(format_pretty_results(result));
 ```

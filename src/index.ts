@@ -12,6 +12,7 @@ export type {
   eval_summary,
   evaluator_function,
   evaluator_result,
+  model_input,
   model_opts,
   run_benchmarks_options,
   verbose_benchmark_result,

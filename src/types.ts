@@ -26,16 +26,14 @@ export interface benchmark_opts {
   name: string;
   system_prompt?: string;
   evals: benchmark_eval[];
-  output: {
-    format: "json";
-    filename?: string;
-  };
 }
 
 export interface model_opts {
   name: string;
   reasoning?: "low" | "medium" | "high";
 }
+
+export type model_input = string | model_opts;
 
 export type eval_result =
   | {
@@ -89,5 +87,8 @@ export interface verbose_benchmark_result {
 }
 
 export interface run_benchmarks_options {
-  verbose?: boolean;
+  api_key: string;
+  models: model_input[];
+  benchmarks: benchmark_opts[];
+  output_file?: string;
 }
