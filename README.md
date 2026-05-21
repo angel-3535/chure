@@ -20,21 +20,12 @@ Install dependencies:
 pnpm install
 ```
 
-Set your OpenRouter API key:
-
-```sh
-export OPENROUTER_API_KEY=your_api_key_here
-```
-
-If you use a `.env` file, the examples already load it with `dotenv`.
+Set your OpenRouter API key and pass it to the function `run_benchmark`
 
 ## Basic Example
 
 ```ts
-import {
-  format_pretty_results,
-  run_benchmarks,
-} from "chure";
+import { format_pretty_results, run_benchmarks } from "chure";
 import type { benchmark_opts, model_opts } from "chure";
 
 const benchmark: benchmark_opts = {

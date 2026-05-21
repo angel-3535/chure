@@ -6,7 +6,7 @@ This project is intended to become a TypeScript SDK for building and running LLM
 
 The main product goal is ease of setup: a developer should be able to define an evaluation, configure OpenRouter, run the benchmark against one or more OpenRouter models, and inspect results with as little ceremony as possible.
 
-The maintainer is new to SDK and npm package development. Future work should include clear explanations of package structure, TypeScript choices, public API design, build tooling, testing, versioning, and publishing tradeoffs as changes are made.
+Future work should include clear explanations of package structure, TypeScript choices, public API design, build tooling, testing, versioning, and publishing tradeoffs as changes are made.
 
 ## Working Principles
 
