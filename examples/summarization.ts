@@ -23,10 +23,10 @@ const score_required_terms = (output: string, expected?: string) => {
 
 const benchmark: benchmark_opts = {
   name: "meeting-summary",
+  system_prompt:
+    "Summarize the note in one sentence. Preserve the most important owner, task, and deadline or next step.",
   evals: [
     {
-      system_prompt:
-        "Summarize the meeting note in one sentence. Preserve the owner, task, and deadline.",
       prompt:
         "Meeting note: Priya will send the launch checklist to the design team by Friday. Marcus will review analytics after the campaign goes live.",
       expected: "priya, launch checklist, friday",

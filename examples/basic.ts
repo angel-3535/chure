@@ -7,9 +7,9 @@ dotenv.config();
 
 const benchmark: benchmark_opts = {
   name: "capitals",
+  system_prompt: "Respond as shortly as possible",
   evals: [
     {
-      system_prompt: "Respond as shortly as possible",
       prompt: "What is the capital of France?",
       expected: "Paris",
       evaluator: {
@@ -17,7 +17,6 @@ const benchmark: benchmark_opts = {
       },
     },
     {
-      system_prompt: "Respond as shortly as possible",
       prompt: "What is the capital of Germany?",
       expected: "Berlin",
       evaluator: {

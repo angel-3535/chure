@@ -24,6 +24,7 @@ export interface benchmark_eval {
 
 export interface benchmark_opts {
   name: string;
+  system_prompt?: string;
   evals: benchmark_eval[];
   output: {
     format: "json";

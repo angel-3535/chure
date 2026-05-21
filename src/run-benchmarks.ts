@@ -73,12 +73,17 @@ export async function run_benchmarks(
       const eval_results: benchmark_eval_result[] = [];
 
       for (const eval_definition of benchmark.evals) {
+        const eval_with_defaults: benchmark_eval = {
+          ...eval_definition,
+          system_prompt:
+            eval_definition.system_prompt ?? benchmark.system_prompt,
+        };
         const output = await run_openrouter_text_completion(
           client,
           model,
-          eval_definition,
+          eval_with_defaults,
         );
-        const evaluator_result = evaluate_output(output, eval_definition);
+        const evaluator_result = evaluate_output(output, eval_with_defaults);
         const result =
           typeof evaluator_result === "boolean"
             ? {
@@ -91,9 +96,9 @@ export async function run_benchmarks(
             };
 
         eval_results.push({
-          system_prompt: eval_definition.system_prompt,
-          prompt: eval_definition.prompt,
-          expected: eval_definition.expected,
+          system_prompt: eval_with_defaults.system_prompt,
+          prompt: eval_with_defaults.prompt,
+          expected: eval_with_defaults.expected,
           output,
           result,
         });

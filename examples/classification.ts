@@ -5,10 +5,10 @@ dotenv.config();
 
 const benchmark: benchmark_opts = {
   name: "support-ticket-routing",
+  system_prompt:
+    "Classify the support ticket into exactly one label: billing, technical, or account. Respond with only the label.",
   evals: [
     {
-      system_prompt:
-        "Classify the support ticket into exactly one label: billing, technical, or account. Respond with only the label.",
       prompt: "I was charged twice for my monthly plan. Can someone fix this?",
       expected: "billing",
       evaluator: {
@@ -16,8 +16,6 @@ const benchmark: benchmark_opts = {
       },
     },
     {
-      system_prompt:
-        "Classify the support ticket into exactly one label: billing, technical, or account. Respond with only the label.",
       prompt: "I forgot my password and no longer have access to my old phone.",
       expected: "account",
       evaluator: {
