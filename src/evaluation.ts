@@ -1,4 +1,4 @@
-import type { eval_case_result, eval_summary } from "./types.js";
+import type { benchmark_eval_result, eval_summary } from "./types.js";
 
 const average_score = (scores: number[]) => {
   return scores.length == 0
@@ -6,31 +6,31 @@ const average_score = (scores: number[]) => {
     : scores.reduce((total, score) => total + score, 0) / scores.length;
 };
 
-export const summarize_case_results = (
-  cases: eval_case_result[],
+export const summarize_eval_results = (
+  evals: benchmark_eval_result[],
 ): eval_summary => {
-  if (cases.every((result) => result.evaluation.type === "pass_fail")) {
+  if (evals.every((eval_result) => eval_result.result.type === "pass_fail")) {
     return {
       type: "pass_fail",
-      passed: cases.every(
-        (result) =>
-          result.evaluation.type === "pass_fail" && result.evaluation.passed,
+      passed: evals.every(
+        (eval_result) =>
+          eval_result.result.type === "pass_fail" && eval_result.result.passed,
       ),
-      passed_cases: cases.filter(
-        (result) =>
-          result.evaluation.type === "pass_fail" && result.evaluation.passed,
+      passed_evals: evals.filter(
+        (eval_result) =>
+          eval_result.result.type === "pass_fail" && eval_result.result.passed,
       ).length,
-      total_cases: cases.length,
+      total_evals: evals.length,
     };
   }
 
   return {
     type: "score",
     score: average_score(
-      cases.map((result) =>
-        result.evaluation.type === "score"
-          ? result.evaluation.score
-          : result.evaluation.passed
+      evals.map((eval_result) =>
+        eval_result.result.type === "score"
+          ? eval_result.result.score
+          : eval_result.result.passed
             ? 100
             : 0,
       ),

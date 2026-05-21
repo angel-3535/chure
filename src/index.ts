@@ -1,16 +1,17 @@
-export { run_evals } from "./run-evals.js";
+export { run_benchmarks } from "./run-benchmarks.js";
 
 export type {
-  eval_case_evaluation,
-  eval_case_result,
-  eval_model_summary_result,
-  eval_model_result,
-  eval_opts,
+  benchmark_eval,
+  benchmark_eval_result,
+  benchmark_model_summary_result,
+  benchmark_model_result,
+  benchmark_opts,
+  benchmark_result,
   eval_result,
   eval_summary,
   evaluator_function,
   evaluator_result,
   model_opts,
-  run_evals_options,
-  verbose_eval_result,
+  run_benchmarks_options,
+  verbose_benchmark_result,
 } from "./types.js";

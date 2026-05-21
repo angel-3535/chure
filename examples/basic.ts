@@ -1,13 +1,13 @@
-import { eval_opts, model_opts, run_evals } from "../src";
+import { benchmark_opts, model_opts, run_benchmarks } from "../src";
 
 import dotenv from "dotenv";
 dotenv.config();
 
 //ideal example of how chure will work
 
-const test: eval_opts = {
+const benchmark: benchmark_opts = {
   name: "capitals",
-  cases: [
+  evals: [
     {
       system_prompt: "Respond as shortly as possible",
       prompt: "What is the capital of France?",
@@ -41,10 +41,10 @@ const models: model_opts[] = [
   },
 ];
 
-const result = await run_evals(
+const result = await run_benchmarks(
   process.env["OPENROUTER_API_KEY"] ?? "",
   models,
-  [test],
+  [benchmark],
   { verbose: true },
 );
 console.log(JSON.stringify(result, null, 2));

@@ -5,21 +5,23 @@ export type evaluator_function = (
   expected?: string,
 ) => evaluator_result;
 
-export interface eval_opts {
+export interface benchmark_eval {
+  system_prompt?: string;
+  prompt: string;
+  expected: string;
+  evaluator:
+    | {
+        type: "exact_match";
+      }
+    | {
+        type: "function";
+        func: evaluator_function;
+      };
+}
+
+export interface benchmark_opts {
   name: string;
-  cases: {
-    system_prompt?: string;
-    prompt: string;
-    expected: string;
-    evaluator:
-      | {
-          type: "exact_match";
-        }
-      | {
-          type: "function";
-          func: evaluator_function;
-        };
-  }[];
+  evals: benchmark_eval[];
   output: {
     format: "json";
     filename?: string;
@@ -31,7 +33,7 @@ export interface model_opts {
   reasoning?: "low" | "medium" | "high";
 }
 
-export type eval_case_evaluation =
+export type eval_result =
   | {
       type: "pass_fail";
       passed: boolean;
@@ -45,43 +47,43 @@ export type eval_summary =
   | {
       type: "pass_fail";
       passed: boolean;
-      passed_cases: number;
-      total_cases: number;
+      passed_evals: number;
+      total_evals: number;
     }
   | {
       type: "score";
       score: number;
     };
 
-export interface eval_case_result {
+export interface benchmark_eval_result {
   system_prompt?: string;
   prompt: string;
   expected: string;
   output: string;
-  evaluation: eval_case_evaluation;
+  result: eval_result;
 }
 
-export interface eval_model_result {
+export interface benchmark_model_result {
   model: string;
-  cases: eval_case_result[];
-  evaluation: eval_summary;
+  evals: benchmark_eval_result[];
+  summary: eval_summary;
 }
 
-export interface eval_model_summary_result {
+export interface benchmark_model_summary_result {
   model: string;
-  evaluation: eval_summary;
+  summary: eval_summary;
 }
 
-export interface eval_result {
+export interface benchmark_result {
   name: string;
-  models: eval_model_summary_result[];
+  models: benchmark_model_summary_result[];
 }
 
-export interface verbose_eval_result {
+export interface verbose_benchmark_result {
   name: string;
-  models: eval_model_result[];
+  models: benchmark_model_result[];
 }
 
-export interface run_evals_options {
+export interface run_benchmarks_options {
   verbose?: boolean;
 }
