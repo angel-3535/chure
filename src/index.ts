@@ -1,4 +1,5 @@
 export { run_benchmarks } from "./run-benchmarks.js";
+export { format_pretty_results } from "./pretty-results.js";
 
 export type {
   benchmark_eval,
