@@ -11,13 +11,13 @@ importers:
       '@openrouter/sdk':
         specifier: ^0.12.35
         version: 0.12.35
-      dotenv:
-        specifier: ^17.4.2
-        version: 17.4.2
     devDependencies:
       '@types/node':
         specifier: ^25.7.0
         version: 25.7.0
+      dotenv:
+        specifier: ^17.4.2
+        version: 17.4.2
       tsx:
         specifier: ^4.21.0
         version: 4.21.0
