@@ -55,18 +55,31 @@ export async function run_evals(
       const case_results: eval_case_result[] = [];
 
       for (const test_case of benchmark_scenario.cases) {
+        const messages = [
+          ...(test_case.system_prompt
+            ? [
+                {
+                  role: "system" as const,
+                  content: test_case.system_prompt,
+                },
+              ]
+            : []),
+          {
+            role: "user" as const,
+            content: test_case.prompt,
+          },
+        ];
         const response = await client.chat.send({
           chatRequest: {
             model: model.name,
-            messages: [
-              {
-                role: "user",
-                content: test_case.prompt,
-              },
-            ],
-            reasoning: {
-              effort: model.reasoning,
-            },
+            messages,
+            ...(model.reasoning
+              ? {
+                  reasoning: {
+                    effort: model.reasoning,
+                  },
+                }
+              : {}),
             stream: false,
           },
         });
@@ -87,6 +100,7 @@ export async function run_evals(
             };
 
         case_results.push({
+          system_prompt: test_case.system_prompt,
           prompt: test_case.prompt,
           expected: test_case.expected,
           output,

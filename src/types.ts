@@ -8,6 +8,7 @@ export type evaluator_function = (
 export interface eval_opts {
   name: string;
   cases: {
+    system_prompt?: string;
     prompt: string;
     expected: string;
     evaluator:
@@ -27,7 +28,7 @@ export interface eval_opts {
 
 export interface model_opts {
   name: string;
-  reasoning: "low" | "medium" | "high";
+  reasoning?: "low" | "medium" | "high";
 }
 
 export type eval_case_evaluation =
@@ -53,6 +54,7 @@ export type eval_summary =
     };
 
 export interface eval_case_result {
+  system_prompt?: string;
   prompt: string;
   expected: string;
   output: string;
