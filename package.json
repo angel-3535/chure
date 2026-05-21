@@ -13,6 +13,7 @@
     "example:basic": "tsx examples/basic.ts",
     "example:classification": "tsx examples/classification.ts",
     "example:invalid-model": "tsx examples/invalid-model.ts",
+    "example:math": "tsx examples/math.ts",
     "example:summarization": "tsx examples/summarization.ts",
     "test": "node --import tsx --test"
   },

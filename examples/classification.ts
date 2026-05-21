@@ -1,4 +1,9 @@
-import { benchmark_opts, model_opts, run_benchmarks } from "../src/index.js";
+import {
+  benchmark_opts,
+  format_pretty_results,
+  model_opts,
+  run_benchmarks,
+} from "../src/index.js";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -42,4 +47,4 @@ const result = await run_benchmarks(
   { verbose: true },
 );
 
-console.log(JSON.stringify(result, null, 2));
+console.log(format_pretty_results(result));
