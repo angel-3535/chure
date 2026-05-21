@@ -27,10 +27,7 @@ const summarize_benchmark_result = (
   })),
 });
 
-const evaluate_output = (
-  output: string,
-  eval_definition: benchmark_eval,
-) => {
+const evaluate_output = (output: string, eval_definition: benchmark_eval) => {
   switch (eval_definition.evaluator.type) {
     case "exact_match":
       return output.trim() === eval_definition.expected.trim();
@@ -58,6 +55,7 @@ export async function run_benchmarks(
   benchmark_list: benchmark_opts[],
   options: { verbose: true },
 ): Promise<verbose_benchmark_result[]>;
+
 export async function run_benchmarks(
   api_key: string,
   model_list: model_opts[],
@@ -92,13 +90,13 @@ export async function run_benchmarks(
               const result =
                 typeof evaluator_result === "boolean"
                   ? {
-                      type: "pass_fail" as const,
-                      passed: evaluator_result,
-                    }
+                    type: "pass_fail" as const,
+                    passed: evaluator_result,
+                  }
                   : {
-                      type: "score" as const,
-                      score: evaluator_result,
-                    };
+                    type: "score" as const,
+                    score: evaluator_result,
+                  };
 
               return {
                 system_prompt: eval_with_defaults.system_prompt,
