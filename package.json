@@ -1,0 +1,28 @@
+{
+  "name": "chure",
+  "version": "0.1.0",
+  "description": "A TypeScript SDK for creating text-based LLM benchmarks.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"No tests configured yet\""
+  },
+  "keywords": [
+    "llm",
+    "benchmark",
+    "evals",
+    "typescript",
+    "sdk"
+  ],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.26.1",
+  "devDependencies": {
+    "typescript": "^6.0.3"
+  }
+}
