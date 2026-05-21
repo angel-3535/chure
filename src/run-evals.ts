@@ -2,6 +2,7 @@ import { OpenRouter } from "@openrouter/sdk";
 import { writeFile } from "node:fs/promises";
 
 import { summarize_case_results } from "./evaluation.js";
+import { run_openrouter_text_completion } from "./openrouter.js";
 import type {
   eval_case_result,
   eval_model_result,
@@ -55,35 +56,11 @@ export async function run_evals(
       const case_results: eval_case_result[] = [];
 
       for (const test_case of benchmark_scenario.cases) {
-        const messages = [
-          ...(test_case.system_prompt
-            ? [
-                {
-                  role: "system" as const,
-                  content: test_case.system_prompt,
-                },
-              ]
-            : []),
-          {
-            role: "user" as const,
-            content: test_case.prompt,
-          },
-        ];
-        const response = await client.chat.send({
-          chatRequest: {
-            model: model.name,
-            messages,
-            ...(model.reasoning
-              ? {
-                  reasoning: {
-                    effort: model.reasoning,
-                  },
-                }
-              : {}),
-            stream: false,
-          },
-        });
-        const output = String(response.choices[0]?.message.content ?? "");
+        const output = await run_openrouter_text_completion(
+          client,
+          model,
+          test_case,
+        );
         const evaluation_result =
           test_case.evaluator.type === "exact_match"
             ? output.trim() === test_case.expected.trim()

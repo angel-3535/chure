@@ -17,6 +17,7 @@ The maintainer is new to SDK and npm package development. Future work should inc
 - Design types first where useful, because this package should feel reliable and discoverable in editors.
 - Keep dependencies minimal, especially for the core SDK.
 - Build incrementally. Not everything added has to be final; expect to grow the SDK slowly and refactor often as the right API becomes clearer.
+- Don't create abstractions the user didn't ask for.
 - Do not add fields or abstractions before there is a concrete need for them.
 - Explain any new npm, TypeScript, build, test, or release concept in plain language when introducing it.
 
