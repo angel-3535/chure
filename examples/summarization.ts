@@ -55,7 +55,7 @@ const benchmark: benchmark_opts = {
 
 const models: model_opts[] = [
   {
-    name: "gpt-3.5-turbo",
+    name: "openai/gpt-3.5-turbo",
   },
 ];
 

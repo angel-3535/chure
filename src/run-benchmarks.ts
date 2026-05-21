@@ -2,7 +2,10 @@ import { OpenRouter } from "@openrouter/sdk";
 import { writeFile } from "node:fs/promises";
 
 import { summarize_eval_results } from "./evaluation.js";
-import { run_openrouter_text_completion } from "./openrouter.js";
+import {
+  run_openrouter_text_completion,
+  validate_openrouter_models,
+} from "./openrouter.js";
 import type {
   benchmark_eval,
   benchmark_eval_result,
@@ -64,6 +67,8 @@ export async function run_benchmarks(
   const client = new OpenRouter({
     apiKey: api_key,
   });
+  await validate_openrouter_models(client, model_list);
+
   const results: Array<benchmark_result | verbose_benchmark_result> = [];
 
   for (const benchmark of benchmark_list) {
