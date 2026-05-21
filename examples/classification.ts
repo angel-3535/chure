@@ -3,23 +3,23 @@ import { benchmark_opts, model_opts, run_benchmarks } from "../src/index.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-//ideal example of how chure will work
-
 const benchmark: benchmark_opts = {
-  name: "capitals",
+  name: "support-ticket-routing",
   evals: [
     {
-      system_prompt: "Respond as shortly as possible",
-      prompt: "What is the capital of France?",
-      expected: "Paris",
+      system_prompt:
+        "Classify the support ticket into exactly one label: billing, technical, or account. Respond with only the label.",
+      prompt: "I was charged twice for my monthly plan. Can someone fix this?",
+      expected: "billing",
       evaluator: {
         type: "exact_match",
       },
     },
     {
-      system_prompt: "Respond as shortly as possible",
-      prompt: "What is the capital of Germany?",
-      expected: "Berlin",
+      system_prompt:
+        "Classify the support ticket into exactly one label: billing, technical, or account. Respond with only the label.",
+      prompt: "I forgot my password and no longer have access to my old phone.",
+      expected: "account",
       evaluator: {
         type: "exact_match",
       },
@@ -27,17 +27,13 @@ const benchmark: benchmark_opts = {
   ],
   output: {
     format: "json",
-    filename: "output.json",
+    filename: "support-ticket-routing.json",
   },
 };
 
 const models: model_opts[] = [
   {
     name: "gpt-3.5-turbo",
-  },
-  {
-    name: "deepseek/deepseek-v4-flash",
-    reasoning: "medium",
   },
 ];
 
@@ -47,4 +43,5 @@ const result = await run_benchmarks(
   [benchmark],
   { verbose: true },
 );
+
 console.log(JSON.stringify(result, null, 2));

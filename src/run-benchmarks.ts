@@ -4,6 +4,7 @@ import { writeFile } from "node:fs/promises";
 import { summarize_eval_results } from "./evaluation.js";
 import { run_openrouter_text_completion } from "./openrouter.js";
 import type {
+  benchmark_eval,
   benchmark_eval_result,
   benchmark_model_result,
   benchmark_opts,
@@ -22,6 +23,20 @@ const summarize_benchmark_result = (
     summary: model_result.summary,
   })),
 });
+
+const evaluate_output = (
+  output: string,
+  eval_definition: benchmark_eval,
+) => {
+  switch (eval_definition.evaluator.type) {
+    case "exact_match":
+      return output.trim() === eval_definition.expected.trim();
+    case "includes":
+      return output.includes(eval_definition.expected.trim());
+    case "function":
+      return eval_definition.evaluator.func(output, eval_definition.expected);
+  }
+};
 
 export async function run_benchmarks(
   api_key: string,
@@ -63,10 +78,7 @@ export async function run_benchmarks(
           model,
           eval_definition,
         );
-        const evaluator_result =
-          eval_definition.evaluator.type === "exact_match"
-            ? output.trim() === eval_definition.expected.trim()
-            : eval_definition.evaluator.func(output, eval_definition.expected);
+        const evaluator_result = evaluate_output(output, eval_definition);
         const result =
           typeof evaluator_result === "boolean"
             ? {

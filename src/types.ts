@@ -14,6 +14,9 @@ export interface benchmark_eval {
         type: "exact_match";
       }
     | {
+        type: "includes";
+      }
+    | {
         type: "function";
         func: evaluator_function;
       };
