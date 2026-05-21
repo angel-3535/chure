@@ -1,11 +1,11 @@
-import { create_eval, model_opts, run_evals } from "../src";
+import { eval_opts, model_opts, run_evals } from "../src";
 
 import dotenv from "dotenv";
 dotenv.config();
 
 //ideal example of how chure will work
 
-const test = create_eval({
+const test: eval_opts = {
   name: "eval",
   cases: [
     {
@@ -20,7 +20,7 @@ const test = create_eval({
     format: "json",
     filename: "output.json",
   },
-});
+};
 
 const models: model_opts[] = [
   {
