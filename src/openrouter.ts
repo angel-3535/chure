@@ -1,6 +1,7 @@
 import type { OpenRouter } from "@openrouter/sdk";
+import { performance } from "node:perf_hooks";
 
-import type { benchmark_eval, model_opts } from "./types.js";
+import type { benchmark_eval, benchmark_eval_timing, model_opts } from "./types.js";
 
 const create_openrouter_messages = (eval_definition: benchmark_eval) => [
   ...(eval_definition.system_prompt
@@ -21,7 +22,11 @@ export const run_openrouter_text_completion = async (
   client: OpenRouter,
   model: model_opts,
   eval_definition: benchmark_eval,
-): Promise<string> => {
+): Promise<{
+  output: string;
+  timing: benchmark_eval_timing;
+}> => {
+  const started_at = performance.now();
   const response = await client.chat.send({
     chatRequest: {
       model: model.name,
@@ -36,8 +41,35 @@ export const run_openrouter_text_completion = async (
       stream: false,
     },
   });
+  const duration_ms = performance.now() - started_at;
 
-  return String(response.choices[0]?.message.content ?? "");
+  let openrouter_timing: benchmark_eval_timing["openrouter"] = {
+    generation_id: response.id,
+    latency_ms: null,
+    generation_time_ms: null,
+  };
+
+  try {
+    const generation = await client.generations.getGeneration({
+      id: response.id,
+    });
+
+    openrouter_timing = {
+      generation_id: response.id,
+      latency_ms: generation.data.latency,
+      generation_time_ms: generation.data.generationTime,
+    };
+  } catch {
+    // Generation metadata can lag behind the chat response; keep the eval usable.
+  }
+
+  return {
+    output: String(response.choices[0]?.message.content ?? ""),
+    timing: {
+      duration_ms,
+      openrouter: openrouter_timing,
+    },
+  };
 };
 
 const format_model_list = (model_names: string[]) =>

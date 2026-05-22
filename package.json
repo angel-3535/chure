@@ -14,6 +14,7 @@
     "example:classification": "tsx examples/classification.ts",
     "example:invalid-model": "tsx examples/invalid-model.ts",
     "example:math": "tsx examples/math.ts",
+    "example:mistake-spotting": "tsx examples/mistake-spotting.ts",
     "example:summarization": "tsx examples/summarization.ts",
     "test": "node --import tsx --test"
   },

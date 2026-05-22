@@ -2,8 +2,11 @@ import type { OpenRouter } from "@openrouter/sdk";
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { validate_openrouter_models } from "../src/openrouter.js";
-import type { model_opts } from "../src/types.js";
+import {
+  run_openrouter_text_completion,
+  validate_openrouter_models,
+} from "../src/openrouter.js";
+import type { benchmark_eval, model_opts } from "../src/types.js";
 
 const create_client_with_models = (model_ids: string[]) =>
   ({
@@ -40,6 +43,46 @@ const create_client_with_model_data = (
       }),
     },
   }) as unknown as OpenRouter;
+
+const create_client_with_completion = (options?: {
+  fail_generation_lookup?: boolean;
+}) =>
+  ({
+    chat: {
+      send: async () => ({
+        id: "gen-test-123",
+        choices: [
+          {
+            message: {
+              content: "mistake",
+            },
+          },
+        ],
+      }),
+    },
+    generations: {
+      getGeneration: async () => {
+        if (options?.fail_generation_lookup) {
+          throw new Error("generation metadata is not ready");
+        }
+
+        return {
+          data: {
+            latency: 812,
+            generationTime: 760,
+          },
+        };
+      },
+    },
+  }) as unknown as OpenRouter;
+
+const mistake_spotting_eval: benchmark_eval = {
+  prompt: "Sentence: The report are due tomorrow.",
+  expected: "mistake",
+  evaluator: {
+    type: "exact_match",
+  },
+};
 
 test("validate_openrouter_models accepts model ids returned by OpenRouter", async () => {
   const client = create_client_with_models([
@@ -115,4 +158,39 @@ test("validate_openrouter_models rejects models without text input and output", 
       return true;
     },
   );
+});
+
+test("run_openrouter_text_completion returns output and timing metadata", async () => {
+  const client = create_client_with_completion();
+
+  const result = await run_openrouter_text_completion(
+    client,
+    { name: "openai/gpt-4o-mini" },
+    mistake_spotting_eval,
+  );
+
+  assert.equal(result.output, "mistake");
+  assert.equal(result.timing.openrouter.generation_id, "gen-test-123");
+  assert.equal(result.timing.openrouter.latency_ms, 812);
+  assert.equal(result.timing.openrouter.generation_time_ms, 760);
+  assert.equal(typeof result.timing.duration_ms, "number");
+  assert(result.timing.duration_ms >= 0);
+});
+
+test("run_openrouter_text_completion keeps output when generation metadata lookup fails", async () => {
+  const client = create_client_with_completion({
+    fail_generation_lookup: true,
+  });
+
+  const result = await run_openrouter_text_completion(
+    client,
+    { name: "openai/gpt-4o-mini" },
+    mistake_spotting_eval,
+  );
+
+  assert.equal(result.output, "mistake");
+  assert.equal(result.timing.openrouter.generation_id, "gen-test-123");
+  assert.equal(result.timing.openrouter.latency_ms, null);
+  assert.equal(result.timing.openrouter.generation_time_ms, null);
+  assert.equal(typeof result.timing.duration_ms, "number");
 });
