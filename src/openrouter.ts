@@ -43,31 +43,10 @@ export const run_openrouter_text_completion = async (
   });
   const duration_ms = performance.now() - started_at;
 
-  let openrouter_timing: benchmark_eval_timing["openrouter"] = {
-    generation_id: response.id,
-    latency_ms: null,
-    generation_time_ms: null,
-  };
-
-  try {
-    const generation = await client.generations.getGeneration({
-      id: response.id,
-    });
-
-    openrouter_timing = {
-      generation_id: response.id,
-      latency_ms: generation.data.latency,
-      generation_time_ms: generation.data.generationTime,
-    };
-  } catch {
-    // Generation metadata can lag behind the chat response; keep the eval usable.
-  }
-
   return {
     output: String(response.choices[0]?.message.content ?? ""),
     timing: {
       duration_ms,
-      openrouter: openrouter_timing,
     },
   };
 };

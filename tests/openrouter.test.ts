@@ -44,9 +44,7 @@ const create_client_with_model_data = (
     },
   }) as unknown as OpenRouter;
 
-const create_client_with_completion = (options?: {
-  fail_generation_lookup?: boolean;
-}) =>
+const create_client_with_completion = () =>
   ({
     chat: {
       send: async () => ({
@@ -59,20 +57,6 @@ const create_client_with_completion = (options?: {
           },
         ],
       }),
-    },
-    generations: {
-      getGeneration: async () => {
-        if (options?.fail_generation_lookup) {
-          throw new Error("generation metadata is not ready");
-        }
-
-        return {
-          data: {
-            latency: 812,
-            generationTime: 760,
-          },
-        };
-      },
     },
   }) as unknown as OpenRouter;
 
@@ -160,7 +144,7 @@ test("validate_openrouter_models rejects models without text input and output", 
   );
 });
 
-test("run_openrouter_text_completion returns output and timing metadata", async () => {
+test("run_openrouter_text_completion returns output and local timing metadata", async () => {
   const client = create_client_with_completion();
 
   const result = await run_openrouter_text_completion(
@@ -170,27 +154,6 @@ test("run_openrouter_text_completion returns output and timing metadata", async 
   );
 
   assert.equal(result.output, "mistake");
-  assert.equal(result.timing.openrouter.generation_id, "gen-test-123");
-  assert.equal(result.timing.openrouter.latency_ms, 812);
-  assert.equal(result.timing.openrouter.generation_time_ms, 760);
   assert.equal(typeof result.timing.duration_ms, "number");
   assert(result.timing.duration_ms >= 0);
-});
-
-test("run_openrouter_text_completion keeps output when generation metadata lookup fails", async () => {
-  const client = create_client_with_completion({
-    fail_generation_lookup: true,
-  });
-
-  const result = await run_openrouter_text_completion(
-    client,
-    { name: "openai/gpt-4o-mini" },
-    mistake_spotting_eval,
-  );
-
-  assert.equal(result.output, "mistake");
-  assert.equal(result.timing.openrouter.generation_id, "gen-test-123");
-  assert.equal(result.timing.openrouter.latency_ms, null);
-  assert.equal(result.timing.openrouter.generation_time_ms, null);
-  assert.equal(typeof result.timing.duration_ms, "number");
 });

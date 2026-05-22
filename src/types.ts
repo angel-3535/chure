@@ -57,21 +57,12 @@ export type eval_summary =
       score: number;
     };
 
-export interface openrouter_generation_timing {
-  generation_id: string;
-  latency_ms: number | null;
-  generation_time_ms: number | null;
-}
-
 export interface benchmark_eval_timing {
   duration_ms: number;
-  openrouter: openrouter_generation_timing;
 }
 
 export interface benchmark_timing_summary {
   average_duration_ms: number;
-  average_openrouter_latency_ms: number | null;
-  average_openrouter_generation_time_ms: number | null;
 }
 
 export interface benchmark_eval_result {

@@ -25,21 +25,6 @@ const pass_rate_for_summary = (
     : summary.passed_evals / summary.total_evals;
 };
 
-const timing_for_summary = (model_result: benchmark_result["models"][number]) => {
-  const openrouter_latency =
-    model_result.timing.average_openrouter_latency_ms;
-
-  return openrouter_latency === null
-    ? {
-        label: "avg-duration",
-        value: model_result.timing.average_duration_ms,
-      }
-    : {
-        label: "avg-latency",
-        value: openrouter_latency,
-      };
-};
-
 export const format_pretty_results = (results: benchmark_result[]) => {
   return results
     .map((benchmark) => {
@@ -56,13 +41,13 @@ export const format_pretty_results = (results: benchmark_result[]) => {
             model: model_result.model,
             pass_rate,
             summary: summary.type === "pass_fail" ? summary : undefined,
-            timing: timing_for_summary(model_result),
+            duration_ms: model_result.timing.average_duration_ms,
           };
         })
         .sort(
           (left, right) =>
             right.pass_rate - left.pass_rate ||
-            left.timing.value - right.timing.value,
+            left.duration_ms - right.duration_ms,
         );
 
       const longest_model_name = rows.reduce(
@@ -85,7 +70,7 @@ export const format_pretty_results = (results: benchmark_result[]) => {
           `${percentage}%`,
           `| total: ${summary.total_evals}`,
           `| fail-count: ${fail_count}`,
-          `| ${row.timing.label}: ${Math.round(row.timing.value)}ms`,
+          `| avg-duration: ${Math.round(row.duration_ms)}ms`,
         ].join(" ");
       });
 

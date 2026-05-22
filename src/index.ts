@@ -16,7 +16,6 @@ export type {
   evaluator_result,
   model_input,
   model_opts,
-  openrouter_generation_timing,
   run_benchmarks_options,
   verbose_benchmark_result,
 } from "./types.js";

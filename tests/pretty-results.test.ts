@@ -19,8 +19,6 @@ test("format_pretty_results renders pass rates as unicode bars", () => {
           },
           timing: {
             average_duration_ms: 1100,
-            average_openrouter_latency_ms: 900,
-            average_openrouter_generation_time_ms: 850,
           },
         },
         {
@@ -33,8 +31,6 @@ test("format_pretty_results renders pass rates as unicode bars", () => {
           },
           timing: {
             average_duration_ms: 900,
-            average_openrouter_latency_ms: 700,
-            average_openrouter_generation_time_ms: 650,
           },
         },
       ],
@@ -46,13 +42,13 @@ test("format_pretty_results renders pass rates as unicode bars", () => {
     [
       "Benchmark Results: capitals",
       "",
-      "openai/gpt-4o-mini   ███████████████░░░░░ 75% | total: 4 | fail-count: 1 | avg-latency: 700ms",
-      "meta-llama/llama-3.1 █████░░░░░░░░░░░░░░░ 25% | total: 4 | fail-count: 3 | avg-latency: 900ms",
+      "openai/gpt-4o-mini   ███████████████░░░░░ 75% | total: 4 | fail-count: 1 | avg-duration: 900ms",
+      "meta-llama/llama-3.1 █████░░░░░░░░░░░░░░░ 25% | total: 4 | fail-count: 3 | avg-duration: 1100ms",
     ].join("\n"),
   );
 });
 
-test("format_pretty_results falls back to local duration when OpenRouter latency is unavailable", () => {
+test("format_pretty_results shows local duration", () => {
   const results: benchmark_result[] = [
     {
       name: "capitals",
@@ -67,8 +63,6 @@ test("format_pretty_results falls back to local duration when OpenRouter latency
           },
           timing: {
             average_duration_ms: 941,
-            average_openrouter_latency_ms: null,
-            average_openrouter_generation_time_ms: null,
           },
         },
       ],
@@ -100,8 +94,6 @@ test("format_pretty_results sorts tied pass rates by faster timing", () => {
           },
           timing: {
             average_duration_ms: 1000,
-            average_openrouter_latency_ms: 1000,
-            average_openrouter_generation_time_ms: 950,
           },
         },
         {
@@ -114,8 +106,6 @@ test("format_pretty_results sorts tied pass rates by faster timing", () => {
           },
           timing: {
             average_duration_ms: 500,
-            average_openrouter_latency_ms: 500,
-            average_openrouter_generation_time_ms: 450,
           },
         },
       ],
@@ -141,8 +131,6 @@ test("format_pretty_results rejects score summaries because pass rate is unavail
           },
           timing: {
             average_duration_ms: 500,
-            average_openrouter_latency_ms: 450,
-            average_openrouter_generation_time_ms: 400,
           },
         },
       ],

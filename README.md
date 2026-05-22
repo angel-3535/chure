@@ -23,9 +23,7 @@ pnpm install
 
 Set your OpenRouter API key and pass it to the function `run_benchmarks`.
 
-Timing uses two sources: Chure always records local elapsed time for each
-request, and it also asks OpenRouter for generation latency when that metadata is
-available.
+Timing is measured locally around each OpenRouter request.
 
 ## Basic Example
 
