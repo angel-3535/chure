@@ -9,6 +9,7 @@ The package is still in development, so the API may change while the core workfl
 - Runs prompt-based benchmark evals against one or more OpenRouter models
 - Supports text-only models
 - Supports simple `exact_match`, `includes`, and custom function evaluators
+- Includes timing metadata so benchmark output can compare accuracy and speed
 - Can write JSON results to a file
 - Includes a small pretty-printer for benchmark output
 
@@ -21,6 +22,8 @@ pnpm install
 ```
 
 Set your OpenRouter API key and pass it to the function `run_benchmarks`.
+
+Timing is measured locally around each OpenRouter request.
 
 ## Basic Example
 

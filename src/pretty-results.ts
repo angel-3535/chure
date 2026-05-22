@@ -41,9 +41,14 @@ export const format_pretty_results = (results: benchmark_result[]) => {
             model: model_result.model,
             pass_rate,
             summary: summary.type === "pass_fail" ? summary : undefined,
+            duration_ms: model_result.timing.average_duration_ms,
           };
         })
-        .sort((left, right) => right.pass_rate - left.pass_rate);
+        .sort(
+          (left, right) =>
+            right.pass_rate - left.pass_rate ||
+            left.duration_ms - right.duration_ms,
+        );
 
       const longest_model_name = rows.reduce(
         (longest, row) => Math.max(longest, row.model.length),
@@ -65,6 +70,7 @@ export const format_pretty_results = (results: benchmark_result[]) => {
           `${percentage}%`,
           `| total: ${summary.total_evals}`,
           `| fail-count: ${fail_count}`,
+          `| avg-duration: ${Math.round(row.duration_ms)}ms`,
         ].join(" ");
       });
 

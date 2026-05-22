@@ -1,7 +1,10 @@
 import { OpenRouter } from "@openrouter/sdk";
 import { writeFile } from "node:fs/promises";
 
-import { summarize_eval_results } from "./evaluation.js";
+import {
+  summarize_eval_results,
+  summarize_timing_results,
+} from "./evaluation.js";
 import {
   run_openrouter_text_completion,
   validate_openrouter_models,
@@ -48,7 +51,7 @@ export async function run_benchmarks(
                 system_prompt:
                   eval_definition.system_prompt ?? benchmark.system_prompt,
               };
-              const output = await run_openrouter_text_completion(
+              const { output, timing } = await run_openrouter_text_completion(
                 client,
                 model,
                 eval_with_defaults,
@@ -74,6 +77,7 @@ export async function run_benchmarks(
                 expected: eval_with_defaults.expected,
                 output,
                 result,
+                timing,
               };
             }),
           );
@@ -82,6 +86,7 @@ export async function run_benchmarks(
             model: model.name,
             evals: eval_results,
             summary: summarize_eval_results(eval_results),
+            timing: summarize_timing_results(eval_results),
           };
         }),
       );

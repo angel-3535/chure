@@ -1,4 +1,8 @@
-import type { benchmark_eval_result, eval_summary } from "./types.js";
+import type {
+  benchmark_eval_result,
+  benchmark_timing_summary,
+  eval_summary,
+} from "./types.js";
 
 const average_score = (scores: number[]) => {
   return scores.length == 0
@@ -34,6 +38,16 @@ export const summarize_eval_results = (
             ? 100
             : 0,
       ),
+    ),
+  };
+};
+
+export const summarize_timing_results = (
+  evals: benchmark_eval_result[],
+): benchmark_timing_summary => {
+  return {
+    average_duration_ms: average_score(
+      evals.map((eval_result) => eval_result.timing.duration_ms),
     ),
   };
 };

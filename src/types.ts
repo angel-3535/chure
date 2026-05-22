@@ -57,23 +57,34 @@ export type eval_summary =
       score: number;
     };
 
+export interface benchmark_eval_timing {
+  duration_ms: number;
+}
+
+export interface benchmark_timing_summary {
+  average_duration_ms: number;
+}
+
 export interface benchmark_eval_result {
   system_prompt?: string;
   prompt: string;
   expected: string;
   output: string;
   result: eval_result;
+  timing: benchmark_eval_timing;
 }
 
 export interface benchmark_model_result {
   model: string;
   evals: benchmark_eval_result[];
   summary: eval_summary;
+  timing: benchmark_timing_summary;
 }
 
 export interface benchmark_model_summary_result {
   model: string;
   summary: eval_summary;
+  timing: benchmark_timing_summary;
 }
 
 export interface benchmark_result {
