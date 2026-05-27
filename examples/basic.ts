@@ -18,14 +18,14 @@ const benchmark: benchmark_opts = {
       prompt: "What is the capital of France?",
       expected: "Paris",
       evaluator: {
-        type: "exact_match",
+        type: "includes",
       },
     },
     {
       prompt: "What is the capital of Germany?",
       expected: "Berlin",
       evaluator: {
-        type: "exact_match",
+        type: "includes",
       },
     },
   ],

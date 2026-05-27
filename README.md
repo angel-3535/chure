@@ -25,6 +25,8 @@ Set your OpenRouter API key and pass it to the function `run_benchmarks`.
 
 For the lower-level `run_eval` primitive, set `OPENROUTER_API_KEY` in your environment. If you want to pass the key directly instead, use `run_eval_with_key`.
 
+`run_benchmarks` returns model-first results: each model includes the benchmarks that were run against it.
+
 ## Single Eval Example
 
 ```ts

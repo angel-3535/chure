@@ -1,4 +1,4 @@
-import type { benchmark_result } from "./types.js";
+import type { model_result } from "./types.js";
 
 const BAR_WIDTH = 20;
 
@@ -10,9 +10,9 @@ const format_bar = (pass_rate: number) => {
 };
 
 const pass_rate_for_summary = (
-  benchmark_name: string,
   model_name: string,
-  summary: benchmark_result["models"][number]["summary"],
+  benchmark_name: string,
+  summary: model_result["benchmarks"][number]["summary"],
 ) => {
   if (summary.type !== "pass_fail") {
     throw new Error(
@@ -25,28 +25,28 @@ const pass_rate_for_summary = (
     : summary.passed_evals / summary.total_evals;
 };
 
-export const format_pretty_results = (results: benchmark_result[]) => {
+export const format_pretty_results = (results: model_result[]) => {
   return results
-    .map((benchmark) => {
-      const rows = benchmark.models
-        .map((model_result) => {
-          const summary = model_result.summary;
+    .map((model_result) => {
+      const rows = model_result.benchmarks
+        .map((benchmark_result) => {
+          const summary = benchmark_result.summary;
           const pass_rate = pass_rate_for_summary(
-            benchmark.name,
             model_result.model,
+            benchmark_result.name,
             summary,
           );
 
           return {
-            model: model_result.model,
+            benchmark: benchmark_result.name,
             pass_rate,
             summary: summary.type === "pass_fail" ? summary : undefined,
           };
         })
         .sort((left, right) => right.pass_rate - left.pass_rate);
 
-      const longest_model_name = rows.reduce(
-        (longest, row) => Math.max(longest, row.model.length),
+      const longest_benchmark_name = rows.reduce(
+        (longest, row) => Math.max(longest, row.benchmark.length),
         0,
       );
 
@@ -60,7 +60,7 @@ export const format_pretty_results = (results: benchmark_result[]) => {
         const fail_count = summary.total_evals - summary.passed_evals;
 
         return [
-          row.model.padEnd(longest_model_name),
+          row.benchmark.padEnd(longest_benchmark_name),
           format_bar(row.pass_rate),
           `${percentage}%`,
           `| total: ${summary.total_evals}`,
@@ -68,7 +68,7 @@ export const format_pretty_results = (results: benchmark_result[]) => {
         ].join(" ");
       });
 
-      return [`Benchmark Results: ${benchmark.name}`, "", ...lines].join("\n");
+      return [`Model Results: ${model_result.model}`, "", ...lines].join("\n");
     })
     .join("\n\n");
 };

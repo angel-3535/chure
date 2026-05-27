@@ -65,25 +65,25 @@ export interface benchmark_eval_result {
   result: eval_result;
 }
 
-export interface benchmark_model_result {
-  model: string;
+export interface model_benchmark_result {
+  name: string;
   evals: benchmark_eval_result[];
   summary: eval_summary;
 }
 
-export interface benchmark_model_summary_result {
-  model: string;
+export interface model_benchmark_summary_result {
+  name: string;
   summary: eval_summary;
 }
 
-export interface benchmark_result {
-  name: string;
-  models: benchmark_model_summary_result[];
+export interface model_result {
+  model: string;
+  benchmarks: model_benchmark_summary_result[];
 }
 
-export interface verbose_benchmark_result {
-  name: string;
-  models: benchmark_model_result[];
+export interface verbose_model_result {
+  model: string;
+  benchmarks: model_benchmark_result[];
 }
 
 export interface run_benchmarks_options {

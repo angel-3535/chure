@@ -123,7 +123,7 @@ const result = await run_benchmarks({
   api_key: process.env["OPENROUTER_API_KEY"] ?? "",
   models,
   benchmarks: [benchmark],
-  output_file: "gsm8k-math-results.json",
+  output_file: "output.json",
 });
 
 console.log(format_pretty_results(result));
