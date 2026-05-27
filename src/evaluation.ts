@@ -1,4 +1,9 @@
-import type { benchmark_eval_result, eval_summary } from "./types.js";
+import type {
+  benchmark_eval,
+  benchmark_eval_result,
+  eval_result,
+  eval_summary,
+} from "./types.js";
 
 const average_score = (scores: number[]) => {
   return scores.length == 0
@@ -36,4 +41,30 @@ export const summarize_eval_results = (
       ),
     ),
   };
+};
+
+export const evaluate_output = (
+  output: string,
+  eval_definition: benchmark_eval,
+): eval_result => {
+  const evaluator_result = (() => {
+    switch (eval_definition.evaluator.type) {
+      case "exact_match":
+        return output.trim() === eval_definition.expected.trim();
+      case "includes":
+        return output.includes(eval_definition.expected.trim());
+      case "function":
+        return eval_definition.evaluator.func(output, eval_definition.expected);
+    }
+  })();
+
+  return typeof evaluator_result === "boolean"
+    ? {
+        type: "pass_fail",
+        passed: evaluator_result,
+      }
+    : {
+        type: "score",
+        score: evaluator_result,
+      };
 };

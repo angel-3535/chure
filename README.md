@@ -6,6 +6,7 @@ The package is still in development, so the API may change while the core workfl
 
 ## What it does today
 
+- Runs a single prompt eval against a single OpenRouter model
 - Runs prompt-based benchmark evals against one or more OpenRouter models
 - Supports text-only models
 - Supports simple `exact_match`, `includes`, and custom function evaluators
@@ -22,7 +23,34 @@ pnpm install
 
 Set your OpenRouter API key and pass it to the function `run_benchmarks`.
 
-## Basic Example
+For the lower-level `run_eval` primitive, set `OPENROUTER_API_KEY` in your environment. If you want to pass the key directly instead, use `run_eval_with_key`.
+
+## Single Eval Example
+
+```ts
+import { run_eval } from "chure";
+import type { benchmark_eval } from "chure";
+
+const eval_definition: benchmark_eval = {
+  prompt: "What is the capital of France?",
+  expected: "Paris",
+  evaluator: {
+    type: "exact_match",
+  },
+};
+
+const result = await run_eval(
+  "openai/gpt-3.5-turbo",
+  eval_definition,
+  "Respond as shortly as possible",
+);
+
+console.log(result);
+```
+
+`run_eval(model, eval_definition, system_prompt?)` is the smallest execution primitive: one model, one eval, one result. If the eval includes its own `system_prompt`, that eval-specific prompt is used instead of the function-level default.
+
+## Benchmark Example
 
 ```ts
 import { format_pretty_results, run_benchmarks } from "chure";

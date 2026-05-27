@@ -1,4 +1,5 @@
 export { run_benchmarks } from "./run-benchmarks.js";
+export { run_eval, run_eval_with_key } from "./run-eval.js";
 export { format_pretty_results } from "./pretty-results.js";
 
 export type {
